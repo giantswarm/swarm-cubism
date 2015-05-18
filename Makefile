@@ -1,6 +1,6 @@
 # standard info
-PROJECT = app
 REGISTRY = registry.giantswarm.io
+PROJECT = cubism
 USERNAME :=  $(shell swarm user)
 ORG := $(shell swarm env | cut -d"/" -f1)
 DOMAIN = cubism-$(USERNAME).gigantic.io
@@ -10,26 +10,32 @@ TOKEN := $(shell cat ~/.swarm/token)
 MY_IP = $(shell boot2docker ip)
 
 test:
-	echo $(TOKEN)
+	@echo "Please run 'make run' to run locally or 'make up' to deploy."
 
-docker-build:
+build:
 	docker build -t $(REGISTRY)/$(ORG)/$(PROJECT) .
 
-docker-run: docker-build
+run: build
+	@echo "####################################################"
 	@echo "Your app is running at http://$(MY_IP):5000"
+	@echo "####################################################"
+
 	docker run --rm -ti \
 		-e "TOKEN=$(TOKEN)" \
 		-p 5000:5000 \
 		$(REGISTRY)/$(ORG)/$(PROJECT)
-
-docker-push: docker-build
+	
+push: build
 	docker push $(REGISTRY)/$(ORG)/$(PROJECT)
 
-docker-pull:
+pull:
 	docker pull $(REGISTRY)/$(ORG)/$(PROJECT)
 
-swarm-up: docker-push
+up: push
 	swarm up \
 	  --var=token=$(TOKEN) \
-	  --var=domain=$(DOMAIN)
+	  --var=domain=$(DOMAIN) \
+	  --var=app=$(APP) \
+	@echo "####################################################"
 	@echo "Your app is running at http://$(domain)"
+	@echo "####################################################"
