@@ -1,18 +1,36 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
+from giantswarm import listapps, instancestats
 
+# create app and load config
 app = Flask(__name__)
+app.config.from_object('config.Base')
 
-# we'll create a few routes now...
+# index handler
 @app.route('/')
-@app.route('/hello/')
-@app.route('/hello/<name>')
-
-# now the main function...
-def hello(name=None):
+def index():
 	try:
-		return render_template('index.html', name=name)
+		return render_template('index.html')
 	except Exception as e:
-		print "an error occured: %s" % e
+		print "an error occured: %s" % ex
+
+@app.route('/org/<org>/env/<env>/app/list')
+def applist(org=None, env=None):
+	print "wtf"
+	response = listapps(org, env)
+	try:
+		print "hi"
+		return jsonify(response)
+	except Exception as ex:
+		print "an error occured: %s" % ex
+
+# json stats handler
+@app.route('/app/<instance>/stats.json')
+def stats(instance=None):
+	response = instancestats(instance)
+	try:
+		return jsonify(response)
+	except Exception as ex:
+		print "an error occured: %s" % ex
 
 # finally, our entrypoint...
 if __name__ == "__main__":

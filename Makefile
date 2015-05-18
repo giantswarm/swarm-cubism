@@ -3,7 +3,8 @@ REGISTRY = registry.giantswarm.io
 PROJECT = cubism
 USERNAME :=  $(shell swarm user)
 ORG := $(shell swarm env | cut -d"/" -f1)
-DOMAIN = cubism-$(USERNAME).gigantic.io
+ENV := $(shell swarm env | cut -d"/" -f2)
+DOMAIN = cubism-$(ORG)-$(ENV).gigantic.io
 TOKEN := $(shell cat ~/.swarm/token)
 
 # local info
@@ -17,11 +18,13 @@ build:
 
 run: build
 	@echo "####################################################"
-	@echo "Your app is running at http://$(MY_IP):5000"
+	@echo "Your app $(APP) is running at http://$(MY_IP):5000"
 	@echo "####################################################"
 
 	docker run --rm -ti \
 		-e "TOKEN=$(TOKEN)" \
+		-e "ORG=$(ORG)" \
+		-e "ENV=$(ENV)" \
 		-p 5000:5000 \
 		$(REGISTRY)/$(ORG)/$(PROJECT)
 	
@@ -35,7 +38,9 @@ up: push
 	swarm up \
 	  --var=token=$(TOKEN) \
 	  --var=domain=$(DOMAIN) \
+	  --var=org=$(ORG) \
+	  --var=env=$(ENV) \
 	  --var=app=$(APP) \
 	@echo "####################################################"
-	@echo "Your app is running at http://$(domain)"
+	@echo "Your app $(APP) is running at http://$(domain)"
 	@echo "####################################################"

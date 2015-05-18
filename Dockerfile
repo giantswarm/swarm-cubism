@@ -7,10 +7,17 @@ RUN apt-get update -qq && \
 
 RUN pip install Flask Flask-Cache requests redis
 
+ADD entrypoint.sh /app/entrypoint.sh
 ADD server.py /app/server.py
+ADD config.py /app/config.py
+ADD giantswarm /app/giantswarm/
 ADD templates /app/templates/
 ADD static /app/static/
 
-ENTRYPOINT ["python", "-u", "/app/server.py"]
+RUN chmod u+x /app/entrypoint.sh
 
 EXPOSE 5000
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["python", "-u", "/app/server.py"]
+
