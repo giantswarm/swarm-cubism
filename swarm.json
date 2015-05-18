@@ -1,0 +1,21 @@
+{
+  "app_name": "swarm-cubism",
+  "services": [
+    {
+      "service_name": "webserver",
+      "components": [
+        {
+          "component_name": "flask",
+          "image": "registry.giantswarm.io/$org/swarm-cubism",
+          "ports": [5000],
+          "domains": {
+            "$domain": 5000
+          }
+          "env": {
+            "token": "$token",
+          },
+        }
+      ]
+    }
+  ]
+}
