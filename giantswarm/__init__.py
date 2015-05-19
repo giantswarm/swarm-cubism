@@ -1,73 +1,97 @@
-
 import requests, json
 
-# authorization token
-headers = {'Authorization': 'giantswarm %s' % app.config['TOKEN']}
-	
 # list all apps in this org/env
-def list_apps(webapp, org, env):
+def list_apps(auth, org, env):
 
 	apps = []
+	message = "ok"
+	headers = {
+		'Authorization': 'giantswarm %s' % auth['token']
+	}
 
 	try:
 		# call the list applications method
 		# GET /v1/org/{org}/env/{env}/app/
 		url = "https://%s/v1/org/%s/env/%s/app/" % (
-			webapp.config['API_SERVER'],
+			auth['server'],
 			org,
 			env
 		)
 		
 		# fetch the response
-		response = requests.get(url, headers=headers)
-		data = json.loads(response.text)
+		result = requests.get(url, headers=headers)
+		data = json.loads(result.text)['data']
 
 		# .data is the json object holding our app list
-		for item in data['data']:
+		for item in data:
 			# .app is the giantswarm app name object
-			apps.append(item['app'])
+			apps.append({'name': item['app']})
 	
 	except Exception as ex:
-		print "caught exception calling API: %s" % ex
+		message = "caught exception calling API: %s" % ex
 
 	# return some json
-	return {'apps': apps, 'response': "ok"}
+	return {'apps': apps, 'response': message}
 
 # list all services in this app
-def list_services(webapp, app):
+def get_app_status(auth, org, env, app):
 
 	services = []
-
-	try:
-		pass
-	except:
-		pass
-		
-# list all instances in this service
-def list_instances(webapp, service):
-
-	instances = []
+	message = "ok"
+	headers = {
+		'Authorization': 'giantswarm %s' % auth['token']
+	}
 
 	try:
 		# call the list applications method
 		# GET /v1/org/{org}/env/{env}/app/
-		url = "https://%s/v1/org/%s/env/%s/app/" % (
-			webapp.config['API_SERVER'],
+		url = "https://%s/v1/org/%s/env/%s/app/%s/status" % (
+			auth['server'],
 			org,
-			env
+			env,
+			app
 		)
 		
 		# fetch the response
-		response = requests.get(url, headers=headers)
-		data = json.loads(response.text)
+		result = requests.get(url, headers=headers)
+		data = json.loads(result.text)['data']
 
-		# .data is the json object holding our app list
-		for item in data['data']:
-			# .app is the giantswarm app name object
-			apps.append(item['app'])
+		# pull services
+		services = data['services']
 	
 	except Exception as ex:
 		print "caught exception calling API: %s" % ex
 
 	# return some json
-	return {'apps': apps, 'response': "ok"}
+	return {'services': services, 'response': "ok"}
+
+# get an instance's stats
+def instance_stats(auth, org, instance):
+
+	stats = {}
+	message = "ok"
+	headers = {
+		'Authorization': 'giantswarm %s' % auth['token']
+	}
+
+	try:
+		# call the instance stats
+		# GET /v1/org/{org}/instance/{instance}/stats
+		url = "https://%s/v1/org/%s/instance/%s/stats" % (
+			auth['server'],
+			org,
+			instance
+		)
+		
+		# fetch the response
+		result = requests.get(url, headers=headers)
+		print result
+		data = json.loads(result.text)
+		print data
+		stats = data['data']
+
+	except Exception as ex:
+		print "caught exception calling API: %s" % ex
+
+	# return some json
+	return {'stats': stats, 'response': "ok"}

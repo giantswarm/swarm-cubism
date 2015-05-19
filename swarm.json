@@ -10,10 +10,10 @@
           "ports": [5000],
           "domains": {
             "$domain": 5000
-          }
-          "env": {
-            "token": "$token",
           },
+          "env": {
+            "token": "$token"
+          }
         }
       ]
     }
