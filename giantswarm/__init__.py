@@ -85,9 +85,7 @@ def instance_stats(auth, org, instance):
 		
 		# fetch the response
 		result = requests.get(url, headers=headers)
-		print result
 		data = json.loads(result.text)
-		print data
 		stats = data['data']
 
 	except Exception as ex:

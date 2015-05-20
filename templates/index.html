@@ -17,8 +17,7 @@
 
 <h2>Visualize Your Giant Swarm Apps</h2>
 
-
-<div id="example1"></div>
+<div id="helloworld"></div>
 
 <p><aside>Mouseover or use the arrow keys to inspect values.<br></aside>
 
@@ -32,64 +31,86 @@
 
 <a href="https://github.com/square/cubism"><img id="fork" src="github.png"></a>
 
+<script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/d3.v2.js"></script>
 <script src="/static/js/cubism.v1.js"></script>
 <script src="/static/js/highlight.min.js"></script>
-<script>
 
-function random(name) {
-  var value = 0,
-      values = [],
-      i = 0,
-      last;
-  return context.metric(function(start, stop, step, callback) {
-    start = +start, stop = +stop;
-    if (isNaN(last)) last = start;
-    while (last < stop) {
-      last += step;
-      value = Math.max(-10, Math.min(10, value + .8 * Math.random() - .4 + .2 * Math.cos(i += .2)));
-      values.push(value);
+<script>
+$(document).ready(function(){
+  // list of instances
+  var apps = {};
+
+  // load application data
+  $.getJSON(
+    "/org/{{ org }}/env/{{ env }}/app/list", 
+    function(data) {
+      // loop through apps
+      $.each(data.apps, function(key, app) {
+        // add div for app name
+        $('#apps').append("<div id='"+app.name+"'></div>");
+        // loop through this app's services
+        
+      });
     }
-    callback(null, values = values.slice((start - stop) / step));
-  }, name);
-}
+  );
 
-</script>
-<script>
+  function random(name) {
+    var value = 0,
+        values = [],
+        i = 0,
+        last;
+    return context.metric(function(start, stop, step, callback) {
+      start = +start, stop = +stop;
+      if (isNaN(last)) last = start;
+      while (last < stop) {
+        last += step;
+        console.log(name);
+        value = 5;
+        values.push(value);
+      }
+      callback(null, values = values.slice((start - stop) / step));
+    }, name);
+  }
 
-var context = cubism.context()
-    .serverDelay(0)
-    .clientDelay(0)
-    .step(1e3)
-    .size(960);
 
-var foo = random("foo"),
-    bar = random("bar");
+  var context = cubism.context()
+      .serverDelay(0)
+      .clientDelay(0)
+      .step(3000)
+      .size(960);
 
-d3.select("#example1").call(function(div) {
+  var foo = random("CpuUsagePercent"),
+      bar = random("MemoryUsageMb"),
+      baz = random("MemoryUsagePercent");
 
-  div.append("div")
-      .attr("class", "axis")
-      .call(context.axis().orient("top"));
+  d3.select("#helloworld").call(function(div) {
 
-  div.selectAll(".horizon")
-      .data([foo, bar, foo.add(bar), foo.subtract(bar)])
-    .enter().append("div")
-      .attr("class", "horizon")
-      .call(context.horizon().extent([-20, 20]));
+    div.append("div")
+        .attr("class", "axis")
+        .call(context.axis().orient("top"));
 
-  div.append("div")
-      .attr("class", "rule")
-      .call(context.rule());
+    div.selectAll(".horizon")
+        .data([foo, bar, baz])
+      .enter().append("div")
+        .attr("class", "horizon")
+        .call(context.horizon().extent([-20, 20]));
+
+    div.append("div")
+        .attr("class", "rule")
+        .call(context.rule());
+
+  });
+
+
+  // On mousemove, reposition the chart values to match the rule.
+  context.on("focus", function(i) {
+    d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
+  });
 
 });
 
-
-// On mousemove, reposition the chart values to match the rule.
-context.on("focus", function(i) {
-  d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
-});
-
 </script>
+
 </body>
 </html>

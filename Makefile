@@ -16,6 +16,15 @@ test:
 build:
 	docker build -t $(REGISTRY)/$(ORG)/$(PROJECT) .
 
+dev: build 
+	docker run --rm -ti \
+		-e "TOKEN=$(TOKEN)" \
+		-e "ORG=$(ORG)" \
+		-e "ENV=$(ENV)" \
+		-e "PROJECT=$(PROJECT)" \
+		-p 5000:5000 \
+		-v `pwd`:/$(PROJECT) -w /$(PROJECT) $(REGISTRY)/$(ORG)/$(PROJECT)
+	
 run: build
 	@echo "####################################################"
 	@echo "Your app $(APP) is running at http://$(MY_IP):5000"

@@ -14,7 +14,11 @@ auth = {
 def index():
 	# fetch org and env from config here
 	try:
-		return render_template('index.html')
+		return render_template(
+			'index.html',
+			org=webapp.config['ORG'],
+			env=webapp.config['ENV']
+		)
 	except Exception as ex:
 		return render_template('error.html', ex=ex)
 
