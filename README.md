@@ -3,9 +3,10 @@ This sample application demonstrates using the [Giant Swarm APIs](https://docs.g
 
 There is a blog post on this if you'd like to get to sleep faster.
 
-![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
+### Screenshot
+Here's a screenshot of the action:
 
-**"I bought the airline."** - Saito
+![action](https://raw.githubusercontent.com/giantswarm/swarm-cubism/master/static/img/screenshot.png)
 
 ### Prerequisites
 You'll need the following installed on your computer to make all this work:
@@ -13,6 +14,10 @@ You'll need the following installed on your computer to make all this work:
 1. [boot2docker](https://github.com/giantswarm/boot2docker#getting-boot2docker-going-on-os-x)
 1. [Giant Swarm account](https://giantswarm.io/request-invite/)
 1. A couple of apps running in your account.
+
+![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
+
+**"I bought the airline."** - Saito
 
 ### Code Checkout
 Checkout the repository locally and switch into it:
@@ -35,9 +40,5 @@ Deploying is even easier:
 
     make up
 
-### Screenshots
-Here's a screenshot of the action:
-
-![action](https://raw.githubusercontent.com/giantswarm/swarm-cubism/master/static/img/screenshot.png)
 
 Enjoy!
