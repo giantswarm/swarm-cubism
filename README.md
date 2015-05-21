@@ -3,5 +3,5 @@ This sample application demonstrates using the [Giant Swarm APIs](https://docs.g
 
 There is a blog post on this as well.
 
-![meme within a meme](assets/shutdown.jpg)
+![meme within a meme](static/jpg/meme.jpg)
 
