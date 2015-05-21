@@ -5,7 +5,7 @@ There is a blog post on this if you'd like to get to sleep faster.
 
 ![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
 
-**I bought the airline.** - Saito
+**"I bought the airline."** - Saito
 
 ### Prerequisites
 You'll need the following installed on your computer to make all this work:
