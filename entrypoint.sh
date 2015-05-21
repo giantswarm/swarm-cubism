@@ -6,13 +6,13 @@ sed -e "s,%TOKEN%,$TOKEN,g;" -i /app/config.py
 sed -e "s,%ORG%,$ORG,g;" -i /app/config.py
 sed -e "s,%ENV%,$ENV,g;" -i /app/config.py
 
-# use the dev directory, if it exists
-if [ -z "$PROJECT" ]; then
-	cd /app
-else
-	cd /$PROJECT
-fi
+# show the configuration
+echo;
+echo "=================================================================="
+echo "Running with the following configuration: "
+cat /app/config.py
+echo "=================================================================="
+echo;
 
 # start the app
 exec "$@"
-

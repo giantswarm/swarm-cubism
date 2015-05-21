@@ -16,18 +16,32 @@ test:
 build:
 	docker build -t $(REGISTRY)/$(ORG)/$(PROJECT) .
 
-dev: build 
+cache-up:
+	-docker stop redis
+	-docker rm redis
+	docker run --name=redis -d redis
+
+cache-down:
+	-docker stop redis
+	-docker rm redis
+
+dev: build cache-up
+	@echo "####################################################"
+	@echo "Your app $(PROJECT) is running at http://$(MY_IP):5000"
+	@echo "####################################################"
+
 	docker run --rm -ti \
 		-e "TOKEN=$(TOKEN)" \
 		-e "ORG=$(ORG)" \
 		-e "ENV=$(ENV)" \
 		-e "PROJECT=$(PROJECT)" \
 		-p 5000:5000 \
-		-v `pwd`:/$(PROJECT) -w /$(PROJECT) $(REGISTRY)/$(ORG)/$(PROJECT)
+		--link redis:redis \
+		-v `pwd`:/app -w /app $(REGISTRY)/$(ORG)/$(PROJECT)
 	
 run: build
 	@echo "####################################################"
-	@echo "Your app $(APP) is running at http://$(MY_IP):5000"
+	@echo "Your app $(PROJECT) is running at http://$(MY_IP):5000"
 	@echo "####################################################"
 
 	docker run --rm -ti \
@@ -35,6 +49,7 @@ run: build
 		-e "ORG=$(ORG)" \
 		-e "ENV=$(ENV)" \
 		-p 5000:5000 \
+		--link redis:redis \
 		$(REGISTRY)/$(ORG)/$(PROJECT)
 	
 push: build
@@ -49,7 +64,8 @@ up: push
 	  --var=domain=$(DOMAIN) \
 	  --var=org=$(ORG) \
 	  --var=env=$(ENV) \
-	  --var=app=$(APP) \
+	  --var=app=$(PROJECT)
+
 	@echo "####################################################"
-	@echo "Your app $(APP) is running at http://$(domain)"
+	@echo "Your app '$(PROJECT)'' is running at http://$(DOMAIN)"
 	@echo "####################################################"

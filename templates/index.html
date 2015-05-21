@@ -10,6 +10,9 @@
     #example2a { min-height: 153px; }
     #example2b { min-height: 255px; }
   </style>
+  <meta property="og:title" content="Giant Swarm Cubism" />
+  <meta property="og:description" content="Awesome graphs for {{ org }}/{{ env }} on Giant Swarm!"/>
+  <meta property="og:image" content="https://pbs.twimg.com/profile_images/508895937817608193/g5fQgDRJ_200x200.png" />
 </head>
 
 <div id="body">
@@ -17,7 +20,7 @@
 
 <h2>Visualize Your Giant Swarm Apps</h2>
 
-<div id="helloworld"></div>
+<div id="apps"></div>
 
 <p><aside>Mouseover or use the arrow keys to inspect values.<br></aside>
 
@@ -29,85 +32,108 @@
 </footer>
 </div>
 
-<a href="https://github.com/square/cubism"><img id="fork" src="github.png"></a>
+<a href="https://github.com/giantswarm/swarm-cubism"><img id="fork" src="/static/img/github.png"></a>
 
 <script src="/static/js/jquery.min.js"></script>
 <script src="/static/js/d3.v2.js"></script>
 <script src="/static/js/cubism.v1.js"></script>
-<script src="/static/js/highlight.min.js"></script>
 
 <script>
 $(document).ready(function(){
   // list of instances
   var apps = {};
 
-  // load application data
-  $.getJSON(
-    "/org/{{ org }}/env/{{ env }}/app/list", 
-    function(data) {
-      // loop through apps
-      $.each(data.apps, function(key, app) {
-        // add div for app name
-        $('#apps').append("<div id='"+app.name+"'></div>");
-        // loop through this app's services
-        
-      });
-    }
-  );
-
-  function random(name) {
-    var value = 0,
-        values = [],
-        i = 0,
-        last;
-    return context.metric(function(start, stop, step, callback) {
-      start = +start, stop = +stop;
-      if (isNaN(last)) last = start;
-      while (last < stop) {
-        last += step;
-        console.log(name);
-        value = 5;
-        values.push(value);
-      }
-      callback(null, values = values.slice((start - stop) / step));
-    }, name);
-  }
-
-
+  // cubism setup
   var context = cubism.context()
       .serverDelay(0)
       .clientDelay(0)
-      .step(3000)
+      .step(5000)
       .size(960);
 
-  var foo = random("CpuUsagePercent"),
-      bar = random("MemoryUsageMb"),
-      baz = random("MemoryUsagePercent");
+  // do queries for instance data
+  function get_stats(instance, metric) {
+    var value = 0;
+    var values = [];
+    var last;
 
-  d3.select("#helloworld").call(function(div) {
+    return context.metric(function(start, stop, step, callback) {
+      start = +start, stop = +stop;
+      if (isNaN(last)) last = start;
+      last += step;
 
-    div.append("div")
-        .attr("class", "axis")
-        .call(context.axis().orient("top"));
-
-    div.selectAll(".horizon")
-        .data([foo, bar, baz])
-      .enter().append("div")
-        .attr("class", "horizon")
-        .call(context.horizon().extent([-20, 20]));
-
-    div.append("div")
-        .attr("class", "rule")
-        .call(context.rule());
-
-  });
-
+      // make call to API
+      $.getJSON(
+        "org/{{ org }}/instance/"+instance+"/stats"
+      ).done(function(data) {
+        value = data.stats[metric];
+        values.push(value);
+        callback(null, values = values.slice((start - stop) / step));
+      });
+    }, metric);
+  }
 
   // On mousemove, reposition the chart values to match the rule.
   context.on("focus", function(i) {
     d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
   });
 
+  // load application data
+  $.getJSON("/org/{{ org }}/env/{{ env }}/app/list").done(function(data) {
+    // instances array
+    var instances = [];
+
+    // loop through apps
+    $.each(data.apps, function(key, app) {
+      // add div for app name
+      $('#apps').append("<div class='app' id='"+app.name+"'></div>");
+      $('#'+app.name).append("<h3>"+app.name+"</h3>");
+
+      // loop through this app's services
+      $.each(app.services, function(key, service) {
+        // loop through this service's components
+        $.each(service.components, function(key, component) {
+          // loop through this component's instances
+          $.each(component.instances, function(key, instance) {
+            // div for the graph
+            var id = "instance_"+instance.id;
+            $('#'+app.name).append("<div class='instance' id='"+id+"'></div>");
+            instances.push(id);
+          });
+          // add div for service and component
+          $('#'+app.name).append(
+            "<div class='back' id='"+service.name+"_"+component.name+"'></div>"
+          );
+          $('#'+service.name+'_'+component.name).append(
+            "<h4>"+service.name+"/"+component.name+"</h4>"
+          );
+        });
+      });
+    });
+
+    $.each(instances, function(key, instance) {
+      // populate the divs with graphs        
+      var cpu = get_stats(instance.split("_")[1], "CpuUsagePercent"),
+          mem = get_stats(instance.split("_")[1], "MemoryUsageMb"),
+          mep = get_stats(instance.split("_")[1],"MemoryUsagePercent");
+
+      d3.select("#"+instance).call(function(div) {
+        div.append("div")
+            .attr("class", "axis")
+            .call(context.axis().orient("top"));
+
+        div.selectAll(".horizon")
+            .data([cpu, mem, mep])
+          .enter().append("div")
+            .attr("class", "horizon")
+            .call(context.horizon().extent([-30, 30]));
+
+        div.append("div")
+            .attr("class", "rule")
+            .call(context.rule());
+
+      });
+    });
+  });
 });
 
 </script>

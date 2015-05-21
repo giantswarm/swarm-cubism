@@ -1,5 +1,7 @@
 from flask import Flask, render_template, jsonify
+from flask.ext.cache import Cache
 from giantswarm import list_apps, get_app_status, instance_stats
+import json
 
 # create webapp and load config
 webapp = Flask(__name__)
@@ -9,8 +11,16 @@ auth = {
 	"server": webapp.config['API_SERVER']
 }
 
+# redis cache
+webapp.cache = Cache(webapp, config={
+    "CACHE_TYPE": "redis",
+    "CACHE_REDIS_HOST": "redis",
+    "CACHE_REDIS_PORT": 6379
+})
+
 # index handler
 @webapp.route('/')
+@webapp.cache.cached(timeout=20)
 def index():
 	# fetch org and env from config here
 	try:
@@ -25,6 +35,7 @@ def index():
 # APIs paths
 # get application list for <org>/<env>
 @webapp.route('/org/<org>/env/<env>/app/list')
+@webapp.cache.cached(timeout=10)
 def applist(org=None, env=None):
 
 	apps = {'apps': []}
@@ -58,10 +69,12 @@ def applist(org=None, env=None):
 
 # application stat
 @webapp.route('/org/<org>/instance/<instance>/stats')
+@webapp.cache.cached(timeout=10)
 def stats(org=None, instance=None):
 	# get an instance's stats
 	result = instance_stats(auth, org, instance)
 
+	print "foobar"
 	if result['response'] == "ok":
 		return jsonify(result)
 	else:

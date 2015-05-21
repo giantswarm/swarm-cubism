@@ -83,6 +83,7 @@ def instance_stats(auth, org, instance):
 			instance
 		)
 		
+	
 		# fetch the response
 		result = requests.get(url, headers=headers)
 		data = json.loads(result.text)

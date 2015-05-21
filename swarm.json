@@ -13,7 +13,21 @@
           },
           "env": {
             "token": "$token"
-          }
+          },
+          "scaling_policy": {
+            "min": 3
+          },
+          "dependencies": [
+            {
+              "name": "redis",
+              "port": 6379
+            }
+          ]
+        },
+        {
+          "component_name": "redis",
+          "image": "redis",
+          "ports": [6379]
         }
       ]
     }

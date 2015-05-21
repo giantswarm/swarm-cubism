@@ -21,5 +21,6 @@ RUN chmod u+x /app/entrypoint.sh
 EXPOSE 5000
 
 ENTRYPOINT ["/app/entrypoint.sh"]
+WORKDIR /app/
 CMD ["python", "-u", "server.py"]
 

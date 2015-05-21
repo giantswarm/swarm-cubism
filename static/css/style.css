@@ -145,7 +145,25 @@ h2 {
   font-size: 28px;
 }
 
-h1, h2 {
+h3 {
+  font-weight: 300;
+  font-size: 24px;
+  color: #4DBEFF;
+  border-top: 2px dashed #888;
+  padding-top: 10px;
+  margin-bottom: 6px;
+}
+
+h4 {
+  opacity: 0.8;
+  font-weight: 600;
+  font-size: 20px;
+  color: #F9A600;
+  margin: 0px;
+  margin-bottom: 10px;
+}
+
+h1, h2, h3, h4 {
   font-family: "Yanone Kaffeesatz";
   text-rendering: optimizeLegibility;
 }
@@ -186,7 +204,7 @@ h1, h2 {
 
 .horizon {
   border-top: solid 1px #000;
-  border-bottom: solid 1px #000;
+  border-bottom: solid 1px #888;
 }
 
 .horizon + .horizon {
