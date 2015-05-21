@@ -15,10 +15,6 @@ You'll need the following installed on your computer to make all this work:
 1. [Giant Swarm account](https://giantswarm.io/request-invite/)
 1. A couple of apps running in your account.
 
-![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
-
-**"I bought the airline."** - Saito
-
 ### Code Checkout
 Checkout the repository locally and switch into it:
 
@@ -40,5 +36,6 @@ Deploying is even easier:
 
     make up
 
+![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
 
-Enjoy!
+**"I bought the airline."** - Saito
