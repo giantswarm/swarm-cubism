@@ -3,5 +3,5 @@ This sample application demonstrates using the [Giant Swarm APIs](https://docs.g
 
 There is a blog post on this as well.
 
-![meme within a meme](master/static/jpg/meme.jpg)
+![meme within a meme](https://github.com/giantswarm/swarm-cubism/blob/master/static/img/meme.jpg)
 
