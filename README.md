@@ -26,7 +26,7 @@ This application uses your current `swarm` settings to authenticate itself to yo
 
     swarm login
 
-Once you are logged in, the app will yank your token out of your home directory and use it as an enviroment variable for launching the app. For reference, the token is in this file:
+Once you are logged in and launch the app, it will yank your token out of your home directory and use it in the application container. For reference, the token is in this file:
 
     ~/.swarm/token
     
