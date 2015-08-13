@@ -90,6 +90,7 @@ $(document).ready(function(){
 
       // loop through this service's components
       $.each(service.components, function(key, component) {
+        console.log(component);
         // loop through this component's instances
         $.each(component.instances, function(key, instance) {
           // div for the graph
@@ -97,12 +98,16 @@ $(document).ready(function(){
           $('#'+service.name).append("<div class='instance' id='"+id+"'></div>");
           instances.push(id);
         });
+
+        // trim out the slashes :(
+        var component_name = component.name.replace(/\//g, '-');
+
         // add div for service and component
         $('#'+service.name).append(
-          "<div class='back' id='"+service.name+"_"+component.name+"'></div>"
+          "<div class='back' id='"+service.name+"_"+component_name+"'></div>"
         );
-        $('#'+service.name+'_'+component.name).append(
-          "<h4>"+service.name+"/"+component.name+"</h4>"
+        $('#'+service.name+'_'+component_name).append(
+          "<h4>"+service.name+"/"+component_name+"</h4>"
         );
       });
     });

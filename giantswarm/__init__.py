@@ -87,9 +87,9 @@ def instance_stats(auth, org, instance):
 			instance
 		)
 		
-	
 		# fetch the response
 		result = requests.get(url, headers=headers)
+		print result.text
 		data = json.loads(result.text)
 		stats = data['data']
 

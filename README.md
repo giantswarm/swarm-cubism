@@ -25,7 +25,6 @@ Checkout the repository locally and switch into it:
     git clone https://github.com/giantswarm/swarm-cubism.git
     cd swarm-cubism
 
-
 ### Quick Launch
 Running this application locally is really easy:
 

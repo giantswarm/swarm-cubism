@@ -1,16 +1,17 @@
 {
+  "name": "$name",
   "components": {
     "webserver/flask": {
-      "image": "registry.giantswarm.io/kord/cubism",
+      "image": "registry.giantswarm.io/$org/cubism",
       "ports": [
         5000
       ],
       "env": [
-        "token=token"
+        "token=$token"
       ],
       "domains": {
         "5000/tcp": [
-          "domain.gigantic.io"
+          "$domain.gigantic.io"
         ]
       },
       "links": [

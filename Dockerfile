@@ -11,7 +11,7 @@ RUN pip install Flask Flask-Cache requests redis
 
 ADD entrypoint.sh /app/entrypoint.sh
 ADD server.py /app/server.py
-ADD config.py /app/config.py
+ADD config.py.template /app/config.py.template
 ADD giantswarm /app/giantswarm/
 ADD templates /app/templates/
 ADD static /app/static/

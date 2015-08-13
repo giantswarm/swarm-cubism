@@ -61,7 +61,7 @@ def servicelist(org=None, env=None):
 					'components': status['components']
 				}
 			)
-		print services
+
 		return jsonify(services)
 	else:
 		# got an error, return an error
@@ -74,7 +74,6 @@ def stats(org=None, instance=None):
 	# get an instance's stats
 	result = instance_stats(auth, org, instance)
 
-	print "foobar"
 	if result['response'] == "ok":
 		return jsonify(result)
 	else:
