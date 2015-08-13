@@ -1,6 +1,6 @@
 from flask import Flask, render_template, jsonify
 from flask.ext.cache import Cache
-from giantswarm import list_apps, get_app_status, instance_stats
+from giantswarm import list_services, get_service_status, instance_stats
 import json
 
 # create webapp and load config
@@ -34,38 +34,38 @@ def index():
 
 # APIs paths
 # get application list for <org>/<env>
-@webapp.route('/org/<org>/env/<env>/app/list')
+@webapp.route('/org/<org>/env/<env>/service/list')
 @webapp.cache.cached(timeout=10)
-def applist(org=None, env=None):
+def servicelist(org=None, env=None):
 
-	apps = {'apps': []}
+	services = {'services': []}
 
 	# get our list of apps with servcies, components, instances
-	result = list_apps(auth, org, env)
+	result = list_services(auth, org, env)
 
 	if result['response'] == "ok":
 
-		for app in result['apps']:
+		for service in result['services']:
 			# get our list of services for each app
-			status = get_app_status(
+			status = get_service_status(
 				auth, 
 				org, 
 				env, 
-				app['name']
+				service['name']
 			)
 
 			# update the result into a unified view
-			apps['apps'].append(
+			services['services'].append(
 				{
-					'name': app['name'],
-					'services': status['services']
+					'name': service['name'],
+					'components': status['components']
 				}
 			)
-
-		return jsonify(apps)
+		print services
+		return jsonify(services)
 	else:
 		# got an error, return an error
-		return jsonify(apps), 500
+		return jsonify(services), 500
 
 # application stat
 @webapp.route('/org/<org>/instance/<instance>/stats')

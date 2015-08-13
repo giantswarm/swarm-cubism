@@ -4,7 +4,7 @@ PROJECT = cubism
 USERNAME :=  $(shell swarm user)
 ORG := $(shell swarm env | cut -d"/" -f1)
 ENV := $(shell swarm env | cut -d"/" -f2)
-DOMAIN = cubism-$(ORG)-$(ENV).gigantic.io
+DOMAIN = $(PROJECT)-$(ORG)-$(ENV).gigantic.io
 TOKEN := $(shell cat ~/.swarm/token)
 
 # local info

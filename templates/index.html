@@ -20,7 +20,7 @@
 
 <h2>Visualize Your Giant Swarm Apps</h2>
 
-<div id="apps"></div>
+<div id="services"></div>
 
 <p><aside>Mouseover or use the arrow keys to inspect values.<br></aside>
 
@@ -41,7 +41,7 @@
 <script>
 $(document).ready(function(){
   // list of instances
-  var apps = {};
+  var services = {};
 
   // cubism setup
   var context = cubism.context()
@@ -77,40 +77,38 @@ $(document).ready(function(){
     d3.selectAll(".value").style("right", i == null ? null : context.size() - i + "px");
   });
 
-  // load application data
-  $.getJSON("/org/{{ org }}/env/{{ env }}/app/list").done(function(data) {
+  // load service data
+  $.getJSON("/org/{{ org }}/env/{{ env }}/service/list").done(function(data) {
     // instances array
     var instances = [];
 
     // loop through apps
-    $.each(data.apps, function(key, app) {
+    $.each(data.services, function(key, service) {
       // add div for app name
-      $('#apps').append("<div class='app' id='"+app.name+"'></div>");
-      $('#'+app.name).append("<h3>"+app.name+"</h3>");
+      $('#services').append("<div class='service' id='"+service.name+"'></div>");
+      $('#'+service.name).append("<h3>"+service.name+"</h3>");
 
-      // loop through this app's services
-      $.each(app.services, function(key, service) {
-        // loop through this service's components
-        $.each(service.components, function(key, component) {
-          // loop through this component's instances
-          $.each(component.instances, function(key, instance) {
-            // div for the graph
-            var id = "instance_"+instance.id;
-            $('#'+app.name).append("<div class='instance' id='"+id+"'></div>");
-            instances.push(id);
-          });
-          // add div for service and component
-          $('#'+app.name).append(
-            "<div class='back' id='"+service.name+"_"+component.name+"'></div>"
-          );
-          $('#'+service.name+'_'+component.name).append(
-            "<h4>"+service.name+"/"+component.name+"</h4>"
-          );
+      // loop through this service's components
+      $.each(service.components, function(key, component) {
+        // loop through this component's instances
+        $.each(component.instances, function(key, instance) {
+          // div for the graph
+          var id = "instance_"+instance.id;
+          $('#'+service.name).append("<div class='instance' id='"+id+"'></div>");
+          instances.push(id);
         });
+        // add div for service and component
+        $('#'+service.name).append(
+          "<div class='back' id='"+service.name+"_"+component.name+"'></div>"
+        );
+        $('#'+service.name+'_'+component.name).append(
+          "<h4>"+service.name+"/"+component.name+"</h4>"
+        );
       });
     });
 
     $.each(instances, function(key, instance) {
+
       // populate the divs with graphs        
       var cpu = get_stats(instance.split("_")[1], "CpuUsagePercent"),
           mem = get_stats(instance.split("_")[1], "MemoryUsageMb"),

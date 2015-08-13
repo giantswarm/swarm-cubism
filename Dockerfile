@@ -1,7 +1,7 @@
 FROM phusion/baseimage
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN apt-get update
+RUN apt-get update --fix-missing
 RUN apt-get install -y python2.7 
 RUN apt-get install -y python-pip 
 RUN apt-get install -y build-essential 
