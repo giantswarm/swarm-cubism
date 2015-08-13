@@ -7,7 +7,9 @@
         5000
       ],
       "env": [
-        "token=$token"
+        "TOKEN=$token",
+        "ENV=$env",
+        "ORG=$org"
       ],
       "domains": {
         "5000/tcp": [
