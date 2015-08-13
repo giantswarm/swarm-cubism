@@ -13,7 +13,7 @@
       ],
       "domains": {
         "5000/tcp": [
-          "$domain.gigantic.io"
+          "$domain"
         ]
       },
       "links": [
