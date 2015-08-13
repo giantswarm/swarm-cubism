@@ -6,6 +6,6 @@ _basedir = os.path.abspath(os.path.dirname(__file__))
 class Base(object):
 
 	API_SERVER = "api.giantswarm.io"
-	TOKEN = "9606edfe-a202-4605-875f-039b77987ec5"
-	ORG = "kord"
-	ENV = "dev"
+	TOKEN = "%TOKEN%"
+	ORG = "%ORG%"
+	ENV = "%ENV%"
